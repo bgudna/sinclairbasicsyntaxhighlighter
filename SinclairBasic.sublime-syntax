@@ -1,0 +1,71 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Sinclair Basic
+file_extensions:
+  - bas
+scope: source.zxbasic
+contexts:
+  main:
+    - match: (').*
+      comment: Comment
+      scope: comment.line.zxbasic
+      captures:
+        1: punctuation.definition.comment.zxbasic
+    - match: "[,:;]"
+      comment: Delimiter
+      scope: meta.delimiter.object.zxbasic
+    - match: \b((END )?IF|(END )?SELECT|(RESUME )?ABS|ACS|AND|ASN|ATN|ATTR|CHR$|CODE|COS|EXP|FN|INKEY$|INT|IN|LEN|LN|NOT|OR|PEEK|PI|POINT|RND|SCREEN$|SGN|SIN|SQR|STR$|TAN|TO|USR|VAL$|VAL)\b
+      comment: Keyword
+      scope: keyword.control.zxbasic
+    - match: (\+|=|<|>|<>|AND|OR)
+      comment: Operator
+      scope: keyword.operator.zxbasic
+    - match: \b(CHR\$|BEEP|BIN|BORDER|BRIGHT|CAT|CIRCLE|CLEAR|CLOSE|CLS|CONTINUE|COPY|DATA|DEF FN|DIM|DRAW|ERASE|FLASH|FORMAT|FOR|GO SUB|GO TO|IF|INK|INPUT|INVERSE|LET|LIST|LLIST|LOAD|LPRINT|MERGE|MOVE|NEW|NEXT|OPEN|OUT|OVER|PAPER|PAUSE|PLOT|POKE|PRINT|RANDOMIZE|READ|REM|RESTORE|RETURN|RUN|SAVE|STOP|VERIFY|AT|LINE|STEP|TAB|THEN)\b
+      comment: Function
+      scope: support.function.zxbasic
+    - match: \b(\d(\.\d)?)+
+      comment: Numeric
+      scope: constant.numeric.zxbasic
+    - match: \b\w+\$
+      comment: Global
+      scope: constant.global.zxbasic
+    - match: '^(\w+):'
+      comment: SUB
+      scope: meta.function.zxbasic
+      captures:
+        1: entity.name.function.zxbasic
+    - match: '[\(\)]'
+      comment: Brace, round
+      scope: meta.brace.round.zxbasic
+    - match: '[\{\}]'
+      comment: Brace, curly
+      scope: meta.brace.curly.zxbasic
+    - match: (\w+\()
+      comment: Array
+      captures:
+        1: constant.array.zxbasic
+      push:
+        - meta_scope: other.array.zxbasic
+        - match: (\))
+          captures:
+            1: constant.array.zxbasic
+          pop: true
+        - include: main
+    - match: (")
+      comment: String, double-quoted
+      captures:
+        1: punctuation.definition.string.begin.zxbasic
+      push:
+        - meta_scope: string.quoted.double.zxbasic
+        - match: (")
+          captures:
+            1: punctuation.definition.string.begin.zxbasic
+          pop: true
+        - match: (\\")
+          comment: Escaped double-quote inside double-quoted string
+          scope: constant.character.escape.zxbasic
+        - match: (')
+          comment: Single quote inside double-quoted string
+          scope: other.zxbasic
+        - include: main
